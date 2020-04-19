@@ -16,6 +16,6 @@ Including another URLconf
 from django.urls import path, include
 
 urlpatterns = [
-    path('e/macid/', include('login.urls')),
-    path('e/macid/social/', include('social.urls')),
+    path('e/pater16/', include('login.urls')),
+    path('e/pater16/social/', include('social.urls')),
 ]
