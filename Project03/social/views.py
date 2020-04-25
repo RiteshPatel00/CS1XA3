@@ -2,6 +2,7 @@ from django.http import HttpResponse,HttpResponseNotFound
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 
 from . import models
@@ -48,16 +49,62 @@ def account_view(request):
     """
     if request.user.is_authenticated:
         form = None
+        msg = ''
+        info_msg = ''
 
-        # TODO Objective 3: Create Forms and Handle POST to Update UserInfo / Password
+        if request.method == 'POST':
+            operation = request.POST['operation']
+            if operation == 'password':
+                password = request.POST['password']
+                password1 = request.POST['new_password1']
+
+
+            
+                user = authenticate(username=request.user.username, password=password)
+                if user is None:
+                    msg = 'Incorrect Password'
+                else:
+                    user.password = make_password(password1)
+                    user.save()
+                    login(request, user)
+                    msg = 'Password Changed'
+            else:
+                user_info = models.UserInfo.objects.get(user=request.user)
+
+                user_info.employment = request.POST['employment']
+                user_info.location = request.POST['location']
+                user_info.birthday = request.POST['birthday']
+
+                user_info.interests.clear()
+                interests = str(request.POST['interests'])
+                interests_list = interests.split(' ')
+                for i in interests_list:
+                    if i != '':
+                        r = models.Interest()
+                        r.label = i
+                        r.save()
+                        user_info.interests.add(r)
+                user_info.save()
+                info_msg = 'your info has been updated.'
 
         user_info = models.UserInfo.objects.get(user=request.user)
         context = { 'user_info' : user_info,
-                    'form' : form }
+                    'form' : form,
+                    'msg' : msg,
+                    'info_msg' : info_msg}
         return render(request,'account.djhtml',context)
 
     request.session['failed'] = True
     return redirect('login:login_view')
+
+
+
+
+
+
+
+
+
 
 def people_view(request):
     """Private Page Only an Authorized User Can View, renders people page

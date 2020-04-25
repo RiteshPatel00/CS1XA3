@@ -5,9 +5,9 @@ class Interest(models.Model):
     label = models.CharField(max_length=30,primary_key=True)
 
 class UserInfoManager(models.Manager):
-    def create_user_info(self, username, password):
-        user = User.objects.create_user(username=username,
-                                    password=password)
+    def create_user_info(self,
+ username, password):
+        user = User.objects.create_user(username=username,password=password)
         userinfo = self.create(user=user)
         return userinfo
 

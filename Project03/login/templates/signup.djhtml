@@ -2,6 +2,25 @@
 
 {% block title %}Signup Page{% endblock %}
 
+
+
+
+
+
+
+
 {% block middle_column %}
-    <!-- TODO Objective 1: implement signup form -->
+    <form class="modal-content animate" method="post" action="{% url 'login:signup_view' %}">
+        {% csrf_token %}
+        <div class="container">
+            <input type="text" placeholder="Enter Username" name="username" required>
+
+            <input type="password" placeholder="Enter Password" name="password" required>
+
+
+            <span style="color: blue">{{ msg }}</span>
+
+            <button type="submit">Create Account</button>
+        </div>
+    </form>
 {% endblock %}

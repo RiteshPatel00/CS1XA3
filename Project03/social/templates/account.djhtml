@@ -2,23 +2,54 @@
 
 {% block title %}Account Page{% endblock %}
 
+
 {% block middle_column %}
     <div class="w3-row-padding">
         <div class="w3-col m12">
             <div class="w3-card w3-round w3-white">
                 <div class="w3-container w3-padding">
                     <h6 class="w3-opacity">Change Password</h6>
-                    <!--                     TODO Objective 3: Add Password Change Form -->
+                    <form class="modal-content" method="post" action="{% url 'social:account_view' %}">
+                        {% csrf_token %}
+                        <div class="container">
+                            <input type="hidden" name="operation" value="password">
+                            <input type="password" placeholder="Enter Current Password" name="password" required>
+                            <input type="password" placeholder="Enter New Password" name="new_password1" required>
+                      
+
+                            <span style="color: blue">{{ msg }}</span>
+
+                            <button type="submit">Change Password</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="w3-row-padding">
         <div class="w3-col m12">
             <div class="w3-card w3-round w3-white">
                 <div class="w3-container w3-padding">
                     <h6 class="w3-opacity">Update Info</h6>
-                    <!--                     TODO Objective 3: Add User Info Update Forms -->
+                    <form class="modal-content" method="post" action="{% url 'social:account_view' %}">
+                        {% csrf_token %}
+                        <div class="container">
+                            <input type="hidden" name="operation" value="info">
+                            
+                            <input type="text" placeholder="Employment" name="employment" value="{{ user_info.employment | default:'Unspecified' }}" required>
+                            
+                            <input type="text" placeholder="Location" name="location" value="{{ user_info.location | default:'Unspecified' }}" required>
+		           
+                            <input type="text" placeholder="Birthday" name="birthday" value="{% if user_info.birthday %}{{ user_info.birthday | date:'Y-m-d' }}{% endif %}" required>
+                            
+                            <input type="text" placeholder="Interests split by spaces" name="interests" value="{% for i in user_info.interests.all %}{{ i.label }} {% endfor %}" required>
+
+                            <span style="color: blue">{{ info_msg }}</span>
+
+                            <button type="submit">Update Info</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
