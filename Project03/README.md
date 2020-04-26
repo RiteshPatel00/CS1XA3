@@ -18,7 +18,7 @@ If on mac1xa3.ca, to serve static assets makes sure the public_html directory co
 `python manage.py runserver localhost:10079`
 
 With the url:
-`https:mac1xa3.ca/e/pater16/`
+`mac1xa3.ca/e/pater16/`
 
 ## Objective 01
 Description:
