@@ -9,9 +9,16 @@ This project can run locally with:
 
 `python manage.py runserver localhost:8000`
 
+With the url:
+`http://localhost:8000/e/pater16/`
+
+
 If on mac1xa3.ca, to serve static assets makes sure the public_html directory contains the static folder, then the server can be ran with my local host port, makes sure you are in the directory with the `manage.py` file and run:
 
 `python manage.py runserver localhost:10079`
+
+With the url:
+`https:mac1xa3.ca/e/pater16/`
 
 ## Objective 01
 Description:
