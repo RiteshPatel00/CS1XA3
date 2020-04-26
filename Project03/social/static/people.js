@@ -57,12 +57,13 @@ function submitMorePpl(event) {
    ********************************************************************************************
    */
 
-function acceptDeclineResponse(data,result) {
-    if (result == 'success') {
+function acceptDeclineResponse(data,status) {
+    if (status == 'success') {
+        // reload page to display new Post
         location.reload();
     }
     else {
-        alert('failed to request Accepting/Declining');
+        alert('failed to request Accepting/Declining' + status);
     }
 }
 
@@ -76,8 +77,6 @@ function acceptDeclineRequest(event) {
            json_data,
            acceptDeclineResponse);
 }
-
-
 /* ********************************************************************************************
    | Document Ready (Only Execute After Document Has Been Loaded)
    ********************************************************************************************

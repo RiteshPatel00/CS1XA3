@@ -1,10 +1,10 @@
+import datetime
 from django.http import HttpResponse,HttpResponseNotFound
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
-
 from . import models
 
 def messages_view(request):
@@ -20,11 +20,18 @@ def messages_view(request):
     if request.user.is_authenticated:
         user_info = models.UserInfo.objects.get(user=request.user)
 
-
-        # TODO Objective 9: query for posts (HINT only return posts needed to be displayed)
-        posts = []
-
-        # TODO Objective 10: check if user has like post, attach as a new attribute to each post
+        posts = models.Post.objects.order_by('-timestamp').all()
+        amount = 1
+        if 'post' not in request.session:
+            request.session['post'] = 1
+        else:
+            amount = int(request.session['post'])
+        posts = posts[:amount]
+        for post in posts:
+            if user_info in post.likes.all():
+                post.has_liked = True
+            else:
+                post.has_liked = False
 
         context = { 'user_info' : user_info
                   , 'posts' : posts }
@@ -32,6 +39,11 @@ def messages_view(request):
 
     request.session['failed'] = True
     return redirect('login:login_view')
+
+
+
+
+
 
 def account_view(request):
     """Private Page Only an Authorized User Can View, allows user to update
@@ -155,21 +167,29 @@ def like_view(request):
                              adds the current user to the likes attribute, then returns
                              an empty HttpResponse, 404 if any error occurs
     '''
+
     postIDReq = request.POST.get('postID')
     if postIDReq is not None:
-        # remove 'post-' from postID and convert to int
-        # TODO Objective 10: parse post id from postIDReq
-        postID = 0
+
+        postID = postIDReq[5:]
+        post = models.Post.objects.get(id=int(postID))
 
         if request.user.is_authenticated:
-            # TODO Objective 10: update Post model entry to add user to likes field
+            user_info = models.UserInfo.objects.get(user=request.user)
+            post.likes.add(user_info)
 
-            # return status='success'
             return HttpResponse()
         else:
             return redirect('login:login_view')
 
     return HttpResponseNotFound('like_view called without postID in POST')
+
+
+
+
+
+
+
 
 def post_submit_view(request):
     '''Handles POST Request recieved from submitting a post in messages.djhtml by adding an entry
@@ -186,10 +206,13 @@ def post_submit_view(request):
     postContent = request.POST.get('postContent')
     if postContent is not None:
         if request.user.is_authenticated:
+            user_info = models.UserInfo.objects.get(user=request.user)
+            post = models.Post()
+            post.owner = user_info
+            post.content = postContent
+            post.timestamp = datetime.datetime.now()
+            post.save()
 
-            # TODO Objective 8: Add a new entry to the Post model
-
-            # return status='success'
             return HttpResponse()
         else:
             return redirect('login:login_view')
@@ -207,14 +230,19 @@ def more_post_view(request):
    	  out : (HttpResponse) - should return an empty HttpResponse after updating hte num_posts sessions variable
     '''
     if request.user.is_authenticated:
-        # update the # of posts dispalyed
 
-        # TODO Objective 9: update how many posts are displayed/returned by messages_view
 
-        # return status='success'
+        total = int(request.session['post'])
+        total += 1
+        request.session['post'] = total
+
+
         return HttpResponse()
 
     return redirect('login:login_view')
+
+
+
 
 def more_ppl_view(request):
     '''Handles POST Request requesting to increase the amount of People displayed in people.djhtml
@@ -287,13 +315,23 @@ def accept_decline_view(request):
     '''
     data = request.POST.get('decision')
     if data is not None:
-        # TODO Objective 6: parse decision from data
+        adID = request.POST.get('adID')
+        username = adID[2:]
+        user = models.User.objects.get(username=username)
+        user_info = models.UserInfo.objects.get(user=user)
 
         if request.user.is_authenticated:
+            my_info = models.UserInfo.objects.get(user=request.user)
+            if data == 'Accept':
+                user_info.friends.add(my_info)
+                my_info.friends.add(user_info)
+                user_info.save()
+                my_info.save()
 
-            # TODO Objective 6: delete FriendRequest entry and update friends in both Users
+            fr = models.FriendRequest.objects.filter(from_user=user_info, to_user=my_info).all()
+            fr.delete()
 
-            # return status='success'
+
             return HttpResponse()
         else:
             return redirect('login:login_view')
