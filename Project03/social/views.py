@@ -118,11 +118,17 @@ def people_view(request):
     """
     if request.user.is_authenticated:
         user_info = models.UserInfo.objects.get(user=request.user)
-        # TODO Objective 4: create a list of all users who aren't friends to the current user (and limit size)
-        all_people = []
 
-        # TODO Objective 5: create a list of all friend requests to current user
-        friend_requests = []
+        all_people = []
+        friendsAll = user_info.friends.all()
+        for person in models.UserInfo.objects.all():
+            if person not in friendsAll and person != user_info:
+                all_people.append(person)
+
+        friend_requests = models.FriendRequest.objects.filter(to_user=user_info).all()
+
+
+
 
         context = { 'user_info' : user_info,
                     'all_people' : all_people,
@@ -221,11 +227,9 @@ def more_ppl_view(request):
    	  out : (HttpResponse) - should return an empty HttpResponse after updating the num ppl sessions variable
     '''
     if request.user.is_authenticated:
-        # update the # of people dispalyed
-
-        # TODO Objective 4: increment session variable for keeping track of num ppl displayed
-
-        # return status='success'
+        amount = int(request.session['ppl'])
+        amount += 1
+        request.session['ppl'] = amount
         return HttpResponse()
 
     return redirect('login:login_view')
@@ -245,19 +249,27 @@ def friend_request_view(request):
     '''
     frID = request.POST.get('frID')
     if frID is not None:
-        # remove 'fr-' from frID
+
         username = frID[3:]
 
         if request.user.is_authenticated:
-            # TODO Objective 5: add new entry to FriendRequest
+            from_user = models.UserInfo.objects.get(user=request.user)
+            user = models.User.objects.get(username=username)
+            to_user = models.UserInfo.objects.get(user=user)
 
-            # return status='success'
+            fr = models.FriendRequest.objects.filter(from_user=from_user, to_user=to_user).all()
+            if len(fr) == 0:
+                fr = models.FriendRequest()
+                fr.from_user = from_user
+                fr.to_user = to_user
+                fr.save()
+
+
             return HttpResponse()
         else:
             return redirect('login:login_view')
 
     return HttpResponseNotFound('friend_request_view called without frID in POST')
-
 def accept_decline_view(request):
     '''Handles POST Request recieved from accepting or declining a friend request in people.djhtml,
        sent by people.js, deletes corresponding FriendRequest entry and adds to users friends relation

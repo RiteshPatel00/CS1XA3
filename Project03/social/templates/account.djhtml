@@ -37,9 +37,9 @@
                         <div class="container">
                             <input type="hidden" name="operation" value="info">
                             
-                            <input type="text" placeholder="Employment" name="employment" value="{{ user_info.employment | default:'Unspecified' }}" required>
+                            <input type="text" placeholder="Employment" name="employment" value="{{ user_info.employment | default:'N/A' }}" required>
                             
-                            <input type="text" placeholder="Location" name="location" value="{{ user_info.location | default:'Unspecified' }}" required>
+                            <input type="text" placeholder="Location" name="location" value="{{ user_info.location | default:'N/A' }}" required>
 		           
                             <input type="text" placeholder="Birthday" name="birthday" value="{% if user_info.birthday %}{{ user_info.birthday | date:'Y-m-d' }}{% endif %}" required>
                             
