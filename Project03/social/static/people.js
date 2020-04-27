@@ -73,6 +73,15 @@ function acceptDeclineRequest(event) {
         'adID': event.target.id
     };
     let url_path = accept_decline_url;
+
+
+
+
+
+
+
+
+    
     $.post(url_path,
            json_data,
            acceptDeclineResponse);

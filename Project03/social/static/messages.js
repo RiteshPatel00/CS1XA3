@@ -12,10 +12,12 @@ function response(data,status) {
 }
 
 function submitPost(event) {
-    let json_data = {
-        'postContent': $('#post-text').html()
-    };
+    let data = $("#post-text").text();
+    let json_data = { 'postContent' : data } ;
     let url_path = post_submit_url;
+
+
+
     $.post(url_path,
            json_data,
            response);
@@ -38,10 +40,16 @@ function likePostResponse(data,status) {
 }
 
 function submitLike(event) {
-    let json_data = {
-        'postID': event.target.id
-    };
+    let json_data = {'postID': event.target.id};
+
+
+
     let url_path = like_post_url;
+    
+
+
+
+
     $.post(url_path,
            json_data,
            likePostResponse);

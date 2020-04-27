@@ -7,7 +7,7 @@
         <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
             {% load static %}
             <img src="{% static 'avatar.png'  %}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-            <h4>{{ person.user.username }}</h4><br>
+            <h1>{{ person.user.username }}</h1><br>
             <hr class="w3-clear">
             <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> {{ person.employment }} </p>
             <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> {{ person.location }} </p>
@@ -17,28 +17,24 @@
     {% endfor %}
 
 
-    <div class="w3-container">
-        <p><button id="more-ppl-button" class="w3-button w3-block w3-theme-l4">View More People</button></p>
-    </div>
-{% endblock %}
 
 
 {% block right_column %}
-    {% for p in friend_requests %}
+    {% for person in friend_requests %}
           <div class="w3-card w3-round w3-white w3-center">
             <div class="w3-container">
               <p>Friend Request</p>
               {% load static %}
               <img src="{% static 'avatar.png'  %}" alt="Avatar" style="width:50%"><br>
-              <span>{{ p.from_user.user.username }}</span>
+              <span>{{ person.from_user.user.username }}</span>
               <div class="w3-row w3-opacity">
                 <div class="w3-half">
-                    <button id="A-{{ p.from_user.user.username }}" class="w3-button w3-block w3-green w3-section acceptdecline-button" title="Accept">
-                        <i class="fa fa-check" id="a-{{ p.from_user.user.username }}" title="Accept"></i></button>
+                    <button id="A-{{ person.from_user.user.username }}" class="w3-button w3-block w3-green w3-section acceptdecline-button" title="Accept">
+                        <i class="fa fa-check" id="a-{{ person.from_user.user.username }}" title="Accept"></i></button>
                 </div>
                 <div class="w3-half">
-                    <button id="D-{{ p.from_user.user.username }}" class="w3-button w3-block w3-red w3-section acceptdecline-button" title="Decline">
-                        <i class="fa fa-remove" id="d-{{ p.from_user.user.username }}" title="Decline"></i></button>
+                    <button id="D-{{ person.from_user.user.username }}" class="w3-button w3-block w3-red w3-section acceptdecline-button" title="Decline">
+                        <i class="fa fa-remove" id="d-{{ person.from_user.user.username }}" title="Decline"></i></button>
                 </div>
               </div>
             </div>

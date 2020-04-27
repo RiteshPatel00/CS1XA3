@@ -39,8 +39,8 @@
         <div class="w3-container">
             <p>Interests</p>
             <p>
-                {% for i in user_info.interests.all %}
-                    <span class="w3-tag w3-small w3-theme-d5">{{ i.label }}</span>
+                {% for userinfo in user_info.interests.all %}
+                    <span class="w3-tag w3-small w3-theme-d5">{{ userinfo.label }}</span>
 	        {% empty %}
                    N/A
                 {% endfor %}                
